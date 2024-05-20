@@ -122,7 +122,6 @@ bool AEnemy::CanAttack()
 void AEnemy::AttackEnd()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Ending Attack"));
-	ClearAttackTimer();
 	EnemyState = EEnemyState::EES_NoState;
 	CheckCombatTarget();
 }
@@ -170,13 +169,11 @@ void AEnemy::CheckCombatTarget()
 {
 	if (IsOutsideCombatRadius())
 	{
-		ClearAttackTimer();
 		LoseInterest();
 		if (!IsEngaged()) StartPatrolling();
 	}
 	else if (IsOutsideAttackRadius() && !IsChasing())
 	{
-		ClearAttackTimer();
 		if (!IsEngaged()) ChaseTarget();
 	}
 	else if (CanAttack())
