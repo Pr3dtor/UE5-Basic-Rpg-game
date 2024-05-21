@@ -48,6 +48,7 @@ void AEnemy::Tick(float DeltaTime)
 	{
 		CheckPatrolTarget();
 	}
+	UE_LOG(LogTemp, Warning, TEXT("1"));
 	
 }
 
@@ -57,6 +58,7 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	CombatTarget = EventInstigator->GetPawn();
 	ChaseTarget();
 	return DamageAmount;
+	UE_LOG(LogTemp, Warning, TEXT("2"));
 }
 
 void AEnemy::Destroyed()
@@ -65,6 +67,7 @@ void AEnemy::Destroyed()
 	{
 		EquippedWeapon->Destroy();
 	}
+	UE_LOG(LogTemp, Warning, TEXT("3"));
 }
 
 void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
@@ -77,6 +80,7 @@ void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
 	else Die();
 	PlayHitSound(ImpactPoint);
 	SpawnHitParticles(ImpactPoint);
+	UE_LOG(LogTemp, Warning, TEXT("4"));
 }
 
 void AEnemy::BeginPlay()
@@ -86,6 +90,7 @@ void AEnemy::BeginPlay()
 	if(PawnSensing) PawnSensing->OnSeePawn.AddDynamic(this, &AEnemy::PawnSeen);
 	InitializeEnemy();
 	StartPatrolling();
+	UE_LOG(LogTemp, Warning, TEXT("5"));
 }
 
 void AEnemy::Die()
@@ -97,16 +102,17 @@ void AEnemy::Die()
 	DisableCapsule();
 	SetLifeSpan(DeathLifeSpan);
 	GetCharacterMovement()->bOrientRotationToMovement = false;
+	UE_LOG(LogTemp, Warning, TEXT("6"));
 }
 
 void AEnemy::Attack()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Executing Attack"));
 	EnemyState = EEnemyState::EES_Engaged;
 	Super::Attack();
 	PlayAttackMontage();
 
 	GetWorldTimerManager().SetTimer(AttackEndTimer, this, &AEnemy::AttackEnd, AttackMax);
+	UE_LOG(LogTemp, Warning, TEXT("7"));
 }
 
 bool AEnemy::CanAttack()
@@ -117,13 +123,14 @@ bool AEnemy::CanAttack()
 		!IsEngaged() &&
 		!IsDead();
 	return bCanAttack;
+	UE_LOG(LogTemp, Warning, TEXT("8"));
 }
 
 void AEnemy::AttackEnd()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Ending Attack"));
 	EnemyState = EEnemyState::EES_NoState;
 	CheckCombatTarget();
+	UE_LOG(LogTemp, Warning, TEXT("9"));
 }
 
 void AEnemy::HandleDamage(float DamageAmount)
@@ -133,6 +140,7 @@ void AEnemy::HandleDamage(float DamageAmount)
 	{
 		HealthBarWidget->SetHealthPercent(Attributes->GetHealthPercent());
 	}
+	UE_LOG(LogTemp, Warning, TEXT("10"));
 }
 
 int32 AEnemy::PlayDeathMontage()
@@ -145,6 +153,7 @@ int32 AEnemy::PlayDeathMontage()
 	}
 
 	return Selection;
+	UE_LOG(LogTemp, Warning, TEXT("11"));
 }
 
 void AEnemy::InitializeEnemy()
@@ -153,6 +162,7 @@ void AEnemy::InitializeEnemy()
 	MoveToTarget(PatrolTarget);
 	HideHealthBar();
 	SpawnDefaultWeapon();
+	UE_LOG(LogTemp, Warning, TEXT("12"));
 }
 
 void AEnemy::CheckPatrolTarget()
@@ -163,6 +173,7 @@ void AEnemy::CheckPatrolTarget()
 		const float WaitTime = FMath::RandRange(PatrolWaitMin, PatrolWaitMax);
 		GetWorldTimerManager().SetTimer(PatrolTimer, this, &AEnemy::PatrolTimerFinished, WaitTime);
 	}
+	UE_LOG(LogTemp, Warning, TEXT("13"));
 }
 
 void AEnemy::CheckCombatTarget()
@@ -180,11 +191,13 @@ void AEnemy::CheckCombatTarget()
 	{
 		StartAttackTimer();
 	}
+	UE_LOG(LogTemp, Warning, TEXT("14"));
 }
 
 void AEnemy::PatrolTimerFinished()
 {
 	MoveToTarget(PatrolTarget);
+	UE_LOG(LogTemp, Warning, TEXT("15"));
 }
 
 void AEnemy::HideHealthBar()
@@ -193,6 +206,7 @@ void AEnemy::HideHealthBar()
 	{
 		HealthBarWidget->SetVisibility(false);
 	}
+	UE_LOG(LogTemp, Warning, TEXT("16"));
 }
 
 void AEnemy::ShowHealthBar()
@@ -201,12 +215,14 @@ void AEnemy::ShowHealthBar()
 	{
 		HealthBarWidget->SetVisibility(true);
 	}
+	UE_LOG(LogTemp, Warning, TEXT("17"));
 }
 
 void AEnemy::LoseInterest()
 {
 	CombatTarget = nullptr;
 	HideHealthBar();
+	UE_LOG(LogTemp, Warning, TEXT("18"));
 }
 
 void AEnemy::StartPatrolling()
@@ -214,68 +230,78 @@ void AEnemy::StartPatrolling()
 	EnemyState = EEnemyState::EES_Patrolling;
 	GetCharacterMovement()->MaxWalkSpeed = PatrollingSpeed;
 	MoveToTarget(PatrolTarget);
+	UE_LOG(LogTemp, Warning, TEXT("19"));
 }
 
 void AEnemy::ChaseTarget()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Chasing Target"));
 	EnemyState = EEnemyState::EES_Chasing;
 	GetCharacterMovement()->MaxWalkSpeed = ChasingSpeed;
 	MoveToTarget(CombatTarget);
+	UE_LOG(LogTemp, Warning, TEXT("20"));
 }
 
 bool AEnemy::IsOutsideCombatRadius()
 {
 	return !InTargetRange(CombatTarget, CombatRadius);
+	UE_LOG(LogTemp, Warning, TEXT("21"));
 }
 
 bool AEnemy::IsOutsideAttackRadius()
 {
 	return !InTargetRange(CombatTarget, AttackRadius);
+	UE_LOG(LogTemp, Warning, TEXT("22"));
 }
 
 bool AEnemy::IsInsideAttackRadius()
 {
 	return InTargetRange(CombatTarget, AttackRadius);
+	UE_LOG(LogTemp, Warning, TEXT("22"));
 }
 
 bool AEnemy::IsChasing()
 {
 	return EnemyState == EEnemyState::EES_Chasing;
+	UE_LOG(LogTemp, Warning, TEXT("23"));
 }
 
 bool AEnemy::IsAttacking()
 {
 	return EnemyState == EEnemyState::EES_Attacking;
+	UE_LOG(LogTemp, Warning, TEXT("24"));
 }
 
 bool AEnemy::IsDead()
 {
 	return EnemyState == EEnemyState::EES_Dead;
+	UE_LOG(LogTemp, Warning, TEXT("25"));
 }
 
 bool AEnemy::IsEngaged()
 {
 	return EnemyState == EEnemyState::EES_Engaged;
+	UE_LOG(LogTemp, Warning, TEXT("26"));
 }
 
 void AEnemy::ClearPatrolTimer()
 {
 	GetWorldTimerManager().ClearTimer(PatrolTimer);
+	UE_LOG(LogTemp, Warning, TEXT("27"));
 }
 
 void AEnemy::StartAttackTimer()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Starting Attack Timer"));
 	EnemyState = EEnemyState::EES_Attacking;
 	const float AttackTime = FMath::RandRange(AttackMin, AttackMax);
 	GetWorldTimerManager().SetTimer(AttackTimer, this, &AEnemy::Attack, AttackTime);
+	UE_LOG(LogTemp, Warning, TEXT("28"));
 }
 
 void AEnemy::ClearAttackTimer()
 {
 	GetWorldTimerManager().ClearTimer(AttackTimer);
 	GetWorldTimerManager().ClearTimer(AttackEndTimer);
+	UE_LOG(LogTemp, Warning, TEXT("29"));
 }
 
 bool AEnemy::InTargetRange(AActor* Target, double Radius)
@@ -283,17 +309,17 @@ bool AEnemy::InTargetRange(AActor* Target, double Radius)
 	if (Target == nullptr) return false;
 	const double DistangeToTarget = (Target->GetActorLocation() - GetActorLocation()).Size();
 	return DistangeToTarget <= Radius;
+	UE_LOG(LogTemp, Warning, TEXT("30"));
 }
 
 void AEnemy::MoveToTarget(AActor* Target)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Moving to Target"));
 	FAIMoveRequest MoveRequest;
 	MoveRequest.SetGoalActor(Target);
 	MoveRequest.SetAcceptanceRadius(50.f);
 
-	FNavPathSharedPtr NavPath;
 	EnemyController->MoveTo(MoveRequest);
+	UE_LOG(LogTemp, Warning, TEXT("31"));
 
 }
 
@@ -314,6 +340,7 @@ AActor* AEnemy::ChoosePatrolTarget()
 			return ValidTargets[TargetSelection];
 		}
 	return nullptr;
+	UE_LOG(LogTemp, Warning, TEXT("32"));
 }
 
 void AEnemy::SpawnDefaultWeapon()
@@ -325,6 +352,7 @@ void AEnemy::SpawnDefaultWeapon()
 		DefaultWeapon->Equip(GetMesh(), FName("RightHandSocket"), this, this);
 		EquippedWeapon = DefaultWeapon;
 	}
+	UE_LOG(LogTemp, Warning, TEXT("33"));
 }
 
 void AEnemy::PawnSeen(APawn* SeenPawn)
@@ -343,6 +371,7 @@ void AEnemy::PawnSeen(APawn* SeenPawn)
 		CombatTarget = SeenPawn;
 		ChaseTarget();
 	}
+	UE_LOG(LogTemp, Warning, TEXT("34"));
 }
 
 
